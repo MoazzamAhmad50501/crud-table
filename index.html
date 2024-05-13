@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Table</title>
+    <link href="style.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  </head>
+  <body>
+    <form>
+      <div id="form">
+        <div>
+          <label for="title">Title:</label>
+          <input
+            type="text"
+            id="title"
+            class="input"
+            placeholder="Enter a Title"
+            required
+          />
+        </div>
+        <div>
+          <label for="description">Description:</label>
+          <input
+            type="text"
+            class="input"
+            id="description"
+            placeholder="Enter a Description"
+            required
+          />
+        </div>
+        <div>
+          <label for="price">Price:</label>
+          <input
+            type="text"
+            class="input"
+            id="price"
+            placeholder="Enter a Price"
+            required
+          />
+        </div>
+        <div>
+          <label for="discountPercentage">DiscountPercentage:</label>
+          <input
+            type="text"
+            class="input"
+            id="discountPercentage"
+            placeholder="Enter a DiscountPercentage"
+            required
+          />
+        </div>
+        <div>
+          <label for="rating">Rating:</label>
+          <input
+            type="text"
+            class="input"
+            id="rating"
+            placeholder="Enter a Rating"
+            required
+          />
+        </div>
+        <div>
+          <label for="stock">Stock:</label>
+          <input
+            type="text"
+            class="input"
+            id="stock"
+            placeholder="Enter a stock"
+            required
+          />
+        </div>
+        <div>
+          <label for="brand">Brand:</label>
+          <input
+            type="text"
+            id="brand"
+            class="input"
+            placeholder="Enter a Brand"
+            required
+          />
+        </div>
+        <div>
+          <label for="category">Category:</label>
+          <input
+            type="text"
+            class="input"
+            id="category"
+            placeholder="Enter a Category"
+            required
+          />
+        </div>
+        <div>
+          <button type="button" id="button">Create</button>
+          <button type="button" id="save">Save</button>
+        </div>
+      </div>
+    </form>
+    <div id="modalBackground" class="modal-background">
+      <div class="modal-content" id="permission">
+        <p>Are you sure you want to delete this item?</p>
+        <button id="modal-cancel-btn" class="btn-cancel">Cancel</button>
+        <button id="modal-delete-btn" class="btn-delete">Delete</button>
+      </div>
+    </div>
+    <div id="sort-by-buttons">
+      <button type="button" id="id-sort">Sort by Id</button>
+      <button type="button" id="title-sort">Sort by Title</button>
+      <button type="button" id="price-sort">Sort by Price</button>
+      <button type="button" id="discount-Percentage-sort">
+        Sort by DiscountPercentage
+      </button>
+      <button type="button" id="rating-sort">Sort by Rating</button>
+      <button type="button" id="stock-sort">Sort by Stock</button>
+      <button type="button" id="brand-sort">Sort by Brand</button>
+      <button type="button" id="category-sort">Sort by Category</button>
+    </div>
+    <table id="table"></table>
+  </body>
+  <script src="createTable.js"></script>
+</html>
