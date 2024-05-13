@@ -1,11 +1,15 @@
 const table = document.getElementById('table')
 const saveBtn = document.getElementById('save')
 
-const createTable = async () => {
-    const response = await fetch('https://dummyjson.com/product')
+const createTable = async (tableData) => {
+    if (tableData) {
+        table.innerHTML = ''
+    }
 
+    const response = await fetch('https://dummyjson.com/product')
     const data = await response.json()
-    const products = data.products
+    const products = tableData ? tableData : data.products
+
     const headings = Object.keys(products[0]).filter(
         (key) => key !== 'thumbnail' && key !== 'images'
     )
@@ -100,13 +104,16 @@ const createTable = async () => {
         table.appendChild(trElement)
     })
 
-    const sortByButtonsIds = Array.from(document.getElementById('sort-by-buttons').children).map(childElem => childElem.id)
+    const sortByButtonsIds = Array.from(document.getElementById('sort-by-buttons').children).map(childElem => childElem.id).filter(val => val)
 
 
     sortByButtonsIds.forEach(id => {
         const element = document.getElementById(id)
+
         if (element) {
-            element.onclick = () => sortData(id)
+            element.onclick = async () => {
+                await sortData(id)
+            }
         }
     })
 }
@@ -215,7 +222,7 @@ const addNewRecord = () => {
     document.getElementById('button').onclick = () => createNewRow(id)
 }
 
-function sortData(name) {
+const sortData = async (field) => {
     const tableElem = document.getElementById('table')
     const tableData = Array.from(tableElem.children)
     const rowsArray = tableData
@@ -223,7 +230,7 @@ function sortData(name) {
             const values = Array.from(row.children)
             return values.map((val) => {
                 if (val.textContent.toLowerCase() === 'editdelete') {
-                    return val.children
+                    return ""
                 } else {
                     return val.textContent
                 }
@@ -231,20 +238,23 @@ function sortData(name) {
         })
         .slice(1)
     const keys = Array.from(document.getElementById('table').children[0].children).map(childElem => _.camelCase(childElem.textContent))
+    const filteredKeys = keys.slice(0, - 1)
+    const filteredRowsArray = rowsArray.map(row => row.filter(val => val !== ""))
 
-    const rowsData = rowsArray.map(subArray =>
+    const rowsData = filteredRowsArray.map(subArray =>
         subArray.reduce((obj, value, index) => {
-            if (keys[index] === 'id' || keys[index] === 'price' || keys[index] === 'discountPercentage' || keys[index] === 'rating' || keys[index] === 'stock') {
+            if (filteredKeys[index] === 'id' || filteredKeys[index] === 'price' || filteredKeys[index] === 'discountPercentage' || filteredKeys[index] === 'rating' || filteredKeys[index] === 'stock') {
                 value = Number(value)
             }
-            obj[keys[index]] = value
+            obj[filteredKeys[index]] = value
             return obj
         }, {})
     )
-    const sortedData = _.sortBy(rowsData, function (o) {
-        return o[name.split('-')[0]]
-    })
-    console.log(sortedData)
+    const sortByField = field.split('-')[0]
+    const order = field.split('-').slice(-1)
+    console.log(order)
+    const sortedData = _.orderBy(rowsData, [(o) => typeof o[sortByField] === "string" ? o[sortByField].toLowerCase() : o[sortByField]], order)
+    await createTable(sortedData)
 }
 
 createTable()
