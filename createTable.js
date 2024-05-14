@@ -311,5 +311,43 @@ const sortData = async (field) => {
     await createTable(sortedData)
 }
 
+const searchData = async () => {
+    document.getElementById('searchButton').onclick = async () => {
+        const searchInput = document.getElementById('searchInput').value
+        const rowsArray = getTableData()
+        const keys = Array.from(
+            document.getElementById('table').children[0].children
+        ).map((childElem) => _.camelCase(childElem.textContent))
+        const filteredKeys = keys.slice(0, -1)
+        const filteredRowsArray = rowsArray.map((row) =>
+            row.filter((val) => val !== '')
+        )
+        const tableText = Array.from(document.getElementById('table').children)
+            .slice(1)
+            .map((val) => val.innerText)
+        const searchData = tableText
+            .map((val, idx) =>
+                val.includes(searchInput) ? filteredRowsArray[idx] : ''
+            )
+            .filter((val) => val)
+        const rowsData = searchData.map((subArray) =>
+            subArray.reduce((obj, value, index) => {
+                if (
+                    filteredKeys[index] === 'id' ||
+                    filteredKeys[index] === 'price' ||
+                    filteredKeys[index] === 'discountPercentage' ||
+                    filteredKeys[index] === 'rating' ||
+                    filteredKeys[index] === 'stock'
+                ) {
+                    value = Number(value)
+                }
+                obj[filteredKeys[index]] = value
+                return obj
+            }, {})
+        )
+        await createTable(rowsData)
+    }
+}
 createTable()
+searchData()
 addNewRecord()
