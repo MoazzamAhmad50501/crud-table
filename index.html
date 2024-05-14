@@ -10,6 +10,13 @@
 </head>
 
 <body>
+  <div id="side-nav" class="side-nav">
+    <a href="#">Products</a>
+    <a href="#">Recipes</a>
+    <a href="#">Comments</a>
+    <a href="#">Todos</a>
+    <a href="#">Quotes</a>
+  </div>
   <form>
     <div id="form">
       <div>
@@ -52,6 +59,7 @@
         <label for="search">Search:</label>
         <input type="text" class="input" id="searchInput" placeholder="Search in Table" required />
         <button id="searchButton" type="button">Search</button>
+        <span id="search-error" style="color: firebrick;" hidden>Could not find the searched value.</span>
       </div>
     </div>
   </form>

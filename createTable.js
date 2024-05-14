@@ -1,13 +1,15 @@
 const table = document.getElementById('table')
 const saveBtn = document.getElementById('save')
+const baseUrl = "https://dummyjson.com"
+const fetchURL = `${baseUrl}/${tableName}?limit=0`
 
-const createTable = async (tableData, isPaginationRequest) => {
+const createTable = async (tableData, isPaginationRequest, url) => {
     if (tableData) {
         table.innerHTML = ''
     }
 
-    const total = 100
-    const response = await fetch(`https://dummyjson.com/product?limit=${total}&select=id,title,description,price,discountPercentage,rating,stock,brand,category`)
+
+    const response = await fetch(url)
     const data = await response.json()
     const itemsPerPage = 5
     const products = tableData ? tableData : data.products
@@ -308,10 +310,12 @@ const sortData = async (field) => {
     const order = field.split('-').slice(-1)
     console.log(order)
     const sortedData = _.orderBy(rowsData, [(o) => typeof o[sortByField] === "string" ? o[sortByField].toLowerCase() : o[sortByField]], order)
-    await createTable(sortedData)
+    await createTable(sortedData, true)
 }
 
 const searchData = async () => {
+    const searchErrorSpan = document.getElementById('search-error')
+    searchErrorSpan.attributes.setNamedItem(document.createAttribute('hidden'))
     document.getElementById('searchButton').onclick = async () => {
         const searchInput = document.getElementById('searchInput').value
         const rowsArray = getTableData()
@@ -326,10 +330,17 @@ const searchData = async () => {
             .slice(1)
             .map((val) => val.innerText)
         const searchData = tableText
-            .map((val, idx) =>
-                val.includes(searchInput) ? filteredRowsArray[idx] : ''
+            .map((val, idx) => {
+                return val.includes(searchInput) ? filteredRowsArray[idx] : ''
+            }
+
             )
             .filter((val) => val)
+
+        if (!searchData.length) {
+            searchErrorSpan.removeAttribute('hidden')
+            throw new Error('No data found.')
+        }
         const rowsData = searchData.map((subArray) =>
             subArray.reduce((obj, value, index) => {
                 if (
@@ -345,7 +356,7 @@ const searchData = async () => {
                 return obj
             }, {})
         )
-        await createTable(rowsData)
+        await createTable(rowsData, true)
     }
 }
 createTable()
